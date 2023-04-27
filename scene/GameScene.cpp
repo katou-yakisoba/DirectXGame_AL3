@@ -12,6 +12,8 @@ GameScene::~GameScene() {
 	delete modelStage_; // ステージ
 
 	delete modelPlayer_; // プレイヤー
+
+	delete modelBeam_; // 弾
 }
 
 void GameScene::Initialize() {
@@ -51,10 +53,19 @@ void GameScene::Initialize() {
 	modelPlayer_ = Model::Create();
 	worldTransformPlayer_.scale_ = {0.5f, 0.5f, 0.5f};
 	worldTransformPlayer_.Initialize();
+
+	textureHandleBeam_ = TextureManager::Load("Beam.png");
+	modelBeam_ = Model::Create();
+	worldTransformBeam_.scale_ = {0.2f, 0.2f, 0.2f};
+	worldTransformBeam_.Initialize();
 }
 
 void GameScene::Update() 
-{ PlayerUpdate(); }
+{
+	PlayerUpdate();
+
+	BeamUpdate();
+}
 
 // プレイヤー更新
 void GameScene::PlayerUpdate() 
@@ -78,11 +89,53 @@ void GameScene::PlayerUpdate()
 
 	// 変換行列を更新
 	worldTransformPlayer_.matWorld_ = MakeAffineMatrix(
-		worldTransformPlayer_.scale_, 
+	worldTransformPlayer_.scale_, 
 		worldTransformPlayer_.rotation_,
 		worldTransformPlayer_.translation_);
 	// 変換行列を定数バッファに転送
-	worldTransformPlayer_.TransferMatrix();
+	worldTransformPlayer_.TransferMatrix();	
+}
+
+// ビーム更新
+void GameScene::BeamUpdate()
+{
+	BeamMove();
+	BeamBorn();
+
+	// 変換行列を更新
+	worldTransformBeam_.matWorld_ = MakeAffineMatrix(
+		worldTransformBeam_.scale_,
+		worldTransformBeam_.rotation_,
+		worldTransformBeam_.translation_);
+	// 変換行列を定数バッファに転送
+	worldTransformBeam_.TransferMatrix();
+}
+
+void GameScene::BeamMove()
+{
+	if (isBeamFlag_ == true)
+	{
+		worldTransformBeam_.rotation_.x += 1.f;
+
+		worldTransformBeam_.translation_.z += 0.5f;
+
+		// 画面外の処理
+		if (worldTransformBeam_.translation_.z >= 40.f)
+		{
+			isBeamFlag_ = false;
+		}
+	}
+}
+
+void GameScene::BeamBorn()
+{
+	if (input_->TriggerKey(DIK_SPACE) && isBeamFlag_ == false)
+	{
+		worldTransformBeam_.translation_.x = worldTransformPlayer_.translation_.x;
+		worldTransformBeam_.translation_.z = worldTransformPlayer_.translation_.z;
+
+		isBeamFlag_ = true;
+	}
 }
 
 void GameScene::Draw() {
@@ -120,6 +173,12 @@ void GameScene::Draw() {
 
 	// プレイヤー
 	modelPlayer_->Draw(worldTransformPlayer_, viewProjection_, textureHandlePlayer_);
+
+	// 弾
+	if (isBeamFlag_ == true)
+	{
+		modelBeam_->Draw(worldTransformBeam_, viewProjection_, textureHandleBeam_);
+	}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
