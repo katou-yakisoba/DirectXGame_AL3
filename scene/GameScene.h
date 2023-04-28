@@ -41,11 +41,18 @@ public: // メンバ関数
 	void Draw();
 
 private:
+	// プレイヤー
 	void PlayerUpdate();
 
+	// 弾
 	void BeamUpdate();
 	void BeamMove();
 	void BeamBorn();
+
+	// 敵
+	void EnemyUpdate();
+	void EnemyMove();
+	void EnemyBorn();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -78,4 +85,10 @@ private: // メンバ変数
 	Model* modelBeam_ = nullptr;
 	WorldTransform worldTransformBeam_;
 	bool isBeamFlag_ = false;
+
+	// 敵
+	uint32_t textureHandleEnemy_ = 0;
+	Model* modelEnemy_ = nullptr;
+	WorldTransform worldTransformEnemy_;
+	bool isEnemyFlag_ = false;
 };
