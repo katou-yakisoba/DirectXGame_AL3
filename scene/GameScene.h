@@ -9,6 +9,8 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
+#include "DebugText.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -54,6 +56,11 @@ private:
 	void EnemyMove();
 	void EnemyBorn();
 
+	// 当たり判定
+	void Collision();              //衝突判定
+	void CollisionPlayerEnemy();   //敵と自機
+	void CollisionBeamEnemy();     //弾と敵
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -91,4 +98,9 @@ private: // メンバ変数
 	Model* modelEnemy_ = nullptr;
 	WorldTransform worldTransformEnemy_;
 	bool isEnemyFlag_ = false;
+
+	// デバッグテキスト
+	DebugText* debugText_ = nullptr;
+	int gameScore_ = 0;   // ゲームスコア
+	int playerLife_ = 3;    // 残機
 };
