@@ -43,6 +43,21 @@ public: // メンバ関数
 	void Draw();
 
 private:
+	// ゲーム更新描画
+	void GamePlayUpdate();
+	void GamePlayDraw3D();
+	void GamePlayDraw2DBack();
+	void GamePlayDraw2DNear();
+
+	// ゲームタイトル更新描画
+	void TitleUpdate();
+	void TitleDraw2DNear();
+
+	// ゲームオーバー更新描画
+	void GameOverUpdate();
+	void GameOverDraw2DNear();
+
+private:
 	// プレイヤー
 	void PlayerUpdate();
 
@@ -103,4 +118,22 @@ private: // メンバ変数
 	DebugText* debugText_ = nullptr;
 	int gameScore_ = 0;   // ゲームスコア
 	int playerLife_ = 3;    // 残機
+
+	// シーン遷移
+	int sceneMode_ = 1;
+
+	// タイトル
+	uint32_t textureHandleTitle_ = 0;
+	Sprite* spriteTitle_ = nullptr;
+
+	// ゲームオーバー
+	uint32_t textureHandleGameOver_ = 0;
+	Sprite* spriteGameOver_ = nullptr;
+
+	// エンターが押されたら
+	uint32_t textureHandleEnter_ = 0;
+	Sprite* spriteEnter_ = nullptr;
+	
+	// 点滅
+	int gameTimer_ = 0;
 };
